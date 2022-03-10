@@ -1,2 +1,3 @@
-# bimm143
-Bioinformatics class W22
+# BIMM143
+Bioinformatics class W22 at UC San Diego
+
