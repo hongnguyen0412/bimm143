@@ -1,0 +1,219 @@
+---
+title: 'Class 11: RNA-Seq continued'
+author: 'Hong (PID: A16558957)'
+date: "2/22/2022"
+output: pdf_document
+---
+
+The data for thihs hands-on session comes from a published RNA-seq experiment where airway smooth muscle cells were treated with dexamethasone, a synthetic glucocorticoid steroid with anti-inflammatory effects
+
+## Import/Read the data from Himes et al.
+
+```{r}
+counts <- read.csv("airway_scaledcounts.csv", row.names=1)
+metadata <-  read.csv("airway_metadata.csv")
+```
+
+Have a little look see:
+
+```{r}
+head(counts)
+```
+
+```{r}
+head(metadata)
+```
+
+I always need to double check that the columns of my countdata and my coldata (metadata) match.
+
+```{r}
+metadata$id
+```
+
+```{r}
+colnames(counts)
+```
+
+```{r}
+all(metadata$id == colnames(counts))
+```
+
+```{r}
+all(c(T,T,T))
+```
+
+I can use the `all()` function to make sure all my values match(e.e. all values are TRUE)
+
+## 2. Extract control and treated counts for comparision 
+
+First lets extract the control counts columns
+
+```{r}
+control.ids <- metadata[metadata$dex == "control",]$id
+control.counts <- counts[,control.ids]
+head(control.counts)
+```
+
+```{r}
+# Take the mean count value per gene (i.e. row)
+control.mean <- rowMeans(control.counts)
+head(control.mean)
+```
+
+Now do the same thing for "treated" samples. 
+
+```{r}
+treated.ids <- metadata[metadata$dex == "treated",]$id
+treated.counts <- counts[,treated.ids]
+head(treated.counts)
+```
+
+```{r}
+treated.mean <- rowMeans(treated.counts)
+head(treated.mean)
+```
+
+Now we can make a plot comparing treated vs control
+
+```{r}
+plot(treated.mean, control.mean)
+```
+
+When we see data that is so skewed like this over quite a wide range of values we start to think of log transformations to make our analysis easier.
+
+```{r}
+plot(treated.mean, control.mean, log = "xy", 
+     xlab = "log of treated counts", 
+     ylab = "log of control counts")
+```
+
+We are after changes in gene expression: treated vs control and this would represent points (i.e. genes) that do not like on the diagonal.
+
+We like to work with log 2 values
+
+```{r}
+log2(40/20)
+```
+
+```{r}
+log2(640/20)
+```
+
+Now let's calculate the log2 fold change
+
+```{r}
+log2fc <- log2(treated.mean/control.mean)
+```
+
+Store my work so far
+
+```{r}
+meancounts <- data.frame(control.mean, treated.mean, log2fc)
+head(meancounts)
+```
+
+Filter our data to remove genes with zero expression values.
+
+```{r}
+c(10,200,0,40) == 0
+```
+
+```{r}
+which(c(10,200,0,40) == 0)
+```
+
+```{r}
+z <- data.frame(x=c(10,0,30,40), 
+           y=c(10,0,30,0))
+which(z == 0, arr.ind = TRUE)
+```
+
+```{r}
+i <- which(z == 0, arr.ind = TRUE)
+unique(i[,1])
+```
+
+Now do it for our real data set
+
+```{r}
+zero.vals <- which(meancounts[,1:2]==0, arr.ind=TRUE)
+to.rm <- unique(zero.vals[,1])
+mycounts <- meancounts[-to.rm,]
+head(mycounts)
+```
+
+How many genes do we have left?
+
+```{r}
+nrow(mycounts)
+```
+
+
+A common threshold used for calling something differentially expressed is a log2(FoldChange) of greater than 2 or less than -2. Let’s filter the dataset both ways to see how many genes are up or down-regulated.
+
+"Up" genes ...
+```{r}
+sum(mycounts$log2fc > 2)
+```
+
+"Down" genes ...
+```{r}
+sum(mycounts$log2fc < -2)
+```
+
+```{r}
+library(DESeq2)
+citation("DESeq2")
+```
+
+```{r}
+dds <- DESeqDataSetFromMatrix(countData=counts, 
+                              colData=metadata, 
+                              design=~dex)
+dds <- DESeq(dds)
+res <- results(dds)
+res
+```
+
+```{r}
+summary(res)
+```
+
+```{r}
+res05 <- results(dds, alpha=0.05)
+summary(res05)
+```
+
+
+## Volcano plots
+Let’s make a commonly produced visualization from this data, namely a so-called Volcano plot. These summary figures are frequently used to highlight the proportion of genes that are both significantly regulated and display a high fold change.
+
+```{r}
+plot(res$log2FoldChange, -log(res$padj))
+abline(h=-log(0.05), col = "gray")
+abline(v=c(-2,2),col="gray")
+```
+
+I want to polish this main results figure by adding color to the genes i will focus on next day
+
+```{r}
+# I will start by making a gray vector for everything
+mycols <- rep("gray", nrow(res))
+
+# Now I will overwite the small padj values
+mycols[res$padj < 0.005] <- "red"
+
+# Now if my log2foldchange  is small I will make them gray
+mycols[abs(res$log2FoldChange) < 2] <- "gray"
+
+plot(res$log2FoldChange, -log(res$padj), col = mycols)
+abline(h=-log(0.05))
+abline(v=c(-2,2))
+```
+
+This is a common overall summary figure because it combines big changes (in terms of log2 foldchange) and significant changes (in terms of p-value) all in one figure.
+
+
+
+
+
