@@ -14,3 +14,5 @@ Class 9 Structural Bioinformatics : https://github.com/hongnguyen0412/bimm143/bl
 Class 10 Genome Informatics: https://github.com/hongnguyen0412/bimm143/blob/main/class10/class10.pdf
 
 Class 11 RNA-Seq continued: https://github.com/hongnguyen0412/bimm143/blob/main/class%2011/class-11.pdf
+
+Class 12 Pathway Analysis: https://github.com/hongnguyen0412/bimm143/blob/main/class%2012/class12.pdf
