@@ -16,3 +16,5 @@ Class 10 Genome Informatics: https://github.com/hongnguyen0412/bimm143/blob/main
 Class 11 RNA-Seq continued: https://github.com/hongnguyen0412/bimm143/blob/main/class%2011/class-11.pdf
 
 Class 12 Pathway Analysis: https://github.com/hongnguyen0412/bimm143/blob/main/class%2012/class12.pdf
+
+Class 14 Covid19 Vaccination Rates: https://github.com/hongnguyen0412/bimm143/blob/main/class14/class14pdf.pdf
