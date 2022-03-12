@@ -8,3 +8,5 @@ Class 6 R function from CRAN: https://github.com/hongnguyen0412/bimm143/blob/mai
 Class 7 Machine Learning: https://github.com/hongnguyen0412/bimm143/blob/main/class07/class07.pdf
 
 Class 8 Mini Project: https://github.com/hongnguyen0412/bimm143/blob/main/class08/class08.pdf
+
+Class 9 Structural Bioinformatics : https://github.com/hongnguyen0412/bimm143/blob/main/class09/class09.pdf
