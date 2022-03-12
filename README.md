@@ -6,3 +6,5 @@ Class 5 Visualization in R: https://github.com/hongnguyen0412/bimm143/blob/main/
 Class 6 R function from CRAN: https://github.com/hongnguyen0412/bimm143/blob/main/class06/class06.pdf
 
 Class 7 Machine Learning: https://github.com/hongnguyen0412/bimm143/blob/main/class07/class07.pdf
+
+Class 8 Mini Project: https://github.com/hongnguyen0412/bimm143/blob/main/class08/class08.pdf
